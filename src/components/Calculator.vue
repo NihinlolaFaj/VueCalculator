@@ -21,6 +21,8 @@
       <div @click="append('0')" class="btn zero">0</div>
       <div @click="dot" class="btn">.</div>
       <div @click="equal" class="btn operator">=</div>
+      <div @click="showPreviousResult" class="btn zero special">Previous</div>
+      <div @click="clearMemory" class="btn clearMem special">Clear Mem</div>
     </div>
   </div>
 </template>
@@ -29,41 +31,50 @@
 export default {
   data() {
     return {
+      previousResult: "",
       previous: "",
       current: "",
       operator: null,
       operatorValue: null,
       operatorClicked: false,
+      results: '',
     };
   },
   methods: {
-    // Clear Function that clears the Display Field
+    test() {
+    axios
+      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+      .then(response => (
+        this.results = response.data.bpi
+        ));
+        console.log(this.results);
+  },
+    // Clear Function that clears the current display of the calculator
     clear() {
       this.current = "";
     },
-    // Append function used to append values on the display field
+    // Append function used to append values on the calculator display
     append(number) {
-      if(this.current.length < 9) {
+      // this.test();
+      if (this.current.length < 9) {
         if (this.operatorClicked) {
-        this.current = "";
-        this.operatorClicked = false;
-      }
-      this.current = `${this.current}${number}`;
-      console.log("Total is " + this.current.length);
-      }
-      else {
+          this.current = "";
+          this.operatorClicked = false;
+        }
+        this.current = `${this.current}${number}`;
+        console.log("Total is " + this.current.length);
+      } else {
         console.log("I can't add no more!");
       }
-      
     },
-    // dot function used to add a dot operand to the display field
+    // dot function used to add a dot operand to the calculator display
     dot() {
       if (this.current.indexOf(".") === -1) {
         this.append(".");
       }
     },
     // setPreviousData function used to store current display value into a previous variable
-    // so at carry out calculation
+    // so at store new display value for the calculation
     setPreviousData() {
       this.previous = this.current;
       this.operatorClicked = true;
@@ -92,7 +103,16 @@ export default {
       this.operator = (a, b) => a + b;
       this.setPreviousData();
     },
-    // equal function that takes combines the arithemetic values and operator to be calculated, 
+    // showPreviousResult function that displays the previous calculator result
+    showPreviousResult() {
+      this.current = this.previousResult;
+    },
+    // clearMemory function used to the memory of the calculator
+    clearMemory() {
+      this.previousResult = '';
+      this.current = '';
+    },
+    // equal function that takes combines the arithemetic values and operator to be calculated,
     // calls the Java REST API to perform calculation, receives the result of the calculation,
     // and displays the result of the calculation in the display field
     equal() {
@@ -103,6 +123,7 @@ export default {
         parseFloat(this.previous),
         parseFloat(this.current)
       )}`;
+      this.previousResult = this.current;
       this.previous = null;
     }
   }
@@ -135,5 +156,11 @@ export default {
 }
 .zero {
   grid-column: 1 / 3;
+}
+.clearMem {
+  grid-column: 3 / 5;
+}
+.special {
+  background-color:tomato;
 }
 </style>
