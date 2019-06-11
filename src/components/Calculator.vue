@@ -3,7 +3,7 @@
     <div class="calculator">
       <div class="display">{{current || '0'}}</div>
       <div @click="clear" class="btn">C</div>
-      <div @click="squareroot" class="btn">√</div>
+      <div @click="squareRoot" class="btn">√</div>
       <div @click="append('3.14')" class="btn">π</div>
       <div @click="setOperator('÷')" class="btn operator">÷</div>
       <div @click="append('7')" class="btn">7</div>
@@ -20,7 +20,7 @@
       <div @click="setOperator('+')" class="btn operator">+</div>
       <div @click="append('0')" class="btn zero">0</div>
       <div @click="dot" class="btn">.</div>
-      <div @click="equal" class="btn operator">=</div>
+      <div @click="equals" class="btn operator">=</div>
       <div @click="showPreviousResult" class="btn zero special">Previous</div>
       <div @click="clearMemory" class="btn clearMem special">Clear Mem</div>
     </div>
@@ -92,7 +92,7 @@ export default {
             }
           } else {
             console.log("API call was NOT successful");
-            alert(this.response.message);
+            alert(this.response.error);
           }
         },
         error => {
@@ -137,7 +137,6 @@ export default {
     // setOperator function that stores the value of the operator to be used for calculation
     setOperator(operator) {
       this.operatorValue = operator;
-      console.log(this.current);
       this.setPreviousData();
     },
     // showPreviousResult function that displays the previous calculator result
@@ -150,11 +149,11 @@ export default {
       this.current = "";
     },
     /**
-     * equal function that takes combines the arithemetic values and operator to be calculated,
+     * equals function that takes combines the arithemetic values and operator to be calculated,
      * calls the Java REST API to perform calculation, receives the result of the calculation,
      * and displays the result of the calculation in the display field
      */
-    equal() {
+    equals() {
       console.log(
         this.previous + " " + this.operatorValue + " " + this.current
       );
@@ -165,8 +164,8 @@ export default {
       // Make API call
       this.callRestApi(this.PostRequest, "calculate");
     },
-    // squareroot function that calls REST API to compute the squareroot of the value displayed
-    squareroot() {
+    // squareRoot function that calls REST API to compute the squareroot of the value displayed
+    squareRoot() {
       this.SquareRootRequest.squareRootOperand = this.current;
 
       // Make API call
