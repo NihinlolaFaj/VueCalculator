@@ -3,21 +3,21 @@
     <div class="calculator">
       <div class="display">{{current || '0'}}</div>
       <div @click="clear" class="btn">C</div>
-      <div class="btn">√</div>
-      <div class="btn">π</div>
-      <div @click="divide" class="btn operator">÷</div>
+      <div @click="squareroot" class="btn">√</div>
+      <div @click="append('3.14')" class="btn">π</div>
+      <div @click="setOperator('÷')" class="btn operator">÷</div>
       <div @click="append('7')" class="btn">7</div>
       <div @click="append('8')" class="btn">8</div>
       <div @click="append('9')" class="btn">9</div>
-      <div @click="times" class="btn operator">x</div>
+      <div @click="setOperator('x')" class="btn operator">x</div>
       <div @click="append('4')" class="btn">4</div>
       <div @click="append('5')" class="btn">5</div>
       <div @click="append('6')" class="btn">6</div>
-      <div @click="minus" class="btn operator">-</div>
+      <div @click="setOperator('-')" class="btn operator">-</div>
       <div @click="append('1')" class="btn">1</div>
       <div @click="append('2')" class="btn">2</div>
       <div @click="append('3')" class="btn">3</div>
-      <div @click="add" class="btn operator">+</div>
+      <div @click="setOperator('+')" class="btn operator">+</div>
       <div @click="append('0')" class="btn zero">0</div>
       <div @click="dot" class="btn">.</div>
       <div @click="equal" class="btn operator">=</div>
@@ -31,38 +31,86 @@
 export default {
   data() {
     return {
+      // Request for the 4 Basic arithmetic calculations
+      PostRequest: {
+        operator: "",
+        firstValue: "",
+        secondValue: ""
+      },
+      // Request for the squareroot calculation
+      SquareRootRequest: {
+        squareRootOperand: ""
+      },
       previousResult: "",
       previous: "",
       current: "",
       operator: null,
       operatorValue: null,
       operatorClicked: false,
-      results: '',
+      results: "",
+      tempResult: 0.00
     };
   },
   methods: {
-    test() {
-    axios
-      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-      .then(response => (
-        this.results = response.data.bpi
-        ));
-        console.log(this.results);
-  },
+    // callRestApi function that makes API call to the Java REST API
+    callRestApi(requestBody, apiMethod) {
+      axios({
+        method: "POST",
+        url: "http://localhost:8085/" + apiMethod,
+        data: requestBody,
+        headers: { "content-type": "application/json" }
+      }).then(
+        result => {
+          this.response = result.data;
+          console.log(this.response);
+          console.log(this.response.id);
+
+          if (this.response.id == 200) {
+            console.log("I was successful");
+
+            // Round-up to 2 decimal places
+            this.tempResult =  parseFloat(this.response.message);
+            this.tempResult = this.tempResult.toFixed(2);
+            console.log(this.tempResult);
+
+            // // If values after decimal point is zero then truncate zeros
+            // if() {
+
+            // }
+            this.current = this.tempResult;
+
+            // Store previous calculation result
+            this.previousResult = this.current;
+            this.previous = null;
+
+            // If result is greater than 9 integer disgits display E
+            if (this.current.length > 9) {
+              this.current = "E";
+            }
+          } else {
+            console.log("I was NOT successful");
+            alert(this.response.message);
+          }
+        },
+        error => {
+          console.error(error);
+          alert("An error occured");
+        }
+      );
+    },
     // Clear Function that clears the current display of the calculator
     clear() {
       this.current = "";
     },
     // Append function used to append values on the calculator display
     append(number) {
-      // this.test();
       if (this.current.length < 9) {
         if (this.operatorClicked) {
           this.current = "";
           this.operatorClicked = false;
         }
         this.current = `${this.current}${number}`;
-        console.log("Total is " + this.current.length);
+        // console.log("Total is " + this.current.length);
       } else {
         console.log("I can't add no more!");
       }
@@ -73,34 +121,17 @@ export default {
         this.append(".");
       }
     },
-    // setPreviousData function used to store current display value into a previous variable
-    // so at store new display value for the calculation
+    /**
+     * setPreviousData function used to store current display value into a previous variable
+     * so at store new display value for the calculation
+     */
     setPreviousData() {
       this.previous = this.current;
       this.operatorClicked = true;
     },
-    // divide function that stores the value of the divide operator
-    divide() {
-      this.operatorValue = "/";
-      this.operator = (a, b) => a / b;
-      this.setPreviousData();
-    },
-    // times function that stores the value of the times operator
-    times() {
-      this.operatorValue = "*";
-      this.operator = (a, b) => a * b;
-      this.setPreviousData();
-    },
-    // minus function that stores the value of the minus operator
-    minus() {
-      this.operatorValue = "-";
-      this.operator = (a, b) => a - b;
-      this.setPreviousData();
-    },
-    // add function that stores the value of the add operator
-    add() {
-      this.operatorValue = "+";
-      this.operator = (a, b) => a + b;
+    // setOperator function that stores the value of the operator to be used for calculation
+    setOperator(operator) {
+      this.operatorValue = operator;
       this.setPreviousData();
     },
     // showPreviousResult function that displays the previous calculator result
@@ -109,22 +140,43 @@ export default {
     },
     // clearMemory function used to the memory of the calculator
     clearMemory() {
-      this.previousResult = '';
-      this.current = '';
+      this.previousResult = "";
+      this.current = "";
     },
-    // equal function that takes combines the arithemetic values and operator to be calculated,
-    // calls the Java REST API to perform calculation, receives the result of the calculation,
-    // and displays the result of the calculation in the display field
+    /**
+     * equal function that takes combines the arithemetic values and operator to be calculated,
+     * calls the Java REST API to perform calculation, receives the result of the calculation,
+     * and displays the result of the calculation in the display field
+     */
     equal() {
       console.log(
         this.previous + " " + this.operatorValue + " " + this.current
       );
-      this.current = `${this.operator(
-        parseFloat(this.previous),
-        parseFloat(this.current)
-      )}`;
-      this.previousResult = this.current;
-      this.previous = null;
+      this.PostRequest.operator = this.operatorValue;
+      this.PostRequest.firstValue = this.previous;
+      this.PostRequest.secondValue = this.current;
+
+      // Make API call
+      this.callRestApi(this.PostRequest, "calculate");
+
+      // // Store previous calculation result
+      // this.previousResult = this.current;
+      // this.previous = null;
+
+      // // If result is greater than 9 interger disgits display E
+      // if (this.current.length > 9) {
+      //   this.current = "E";
+      // }
+    },
+    // squareroot function that calls REST API to compute the squareroot of the value displayed
+    squareroot() {
+      console.log(
+        this.current
+      );
+      this.SquareRootRequest.squareRootOperand = this.current;
+
+      // Make API call
+      this.callRestApi(this.SquareRootRequest, "squareroot");
     }
   }
 };
@@ -132,6 +184,15 @@ export default {
 
 <!-- The customised stylesheet for the calculator app -->
 <style scoped>
+header {
+  margin-bottom: 5%;
+  padding: 10px;
+  height: 0%;
+  text-align: center;
+  background: rgb(1, 96, 128);
+  color: white;
+  font-size: 40px;
+}
 .calculator {
   width: 400px;
   height: 400px;
@@ -150,6 +211,10 @@ export default {
   background-color: #f2f2f2;
   border: 1px solid #999;
 }
+.btn:active {
+  background-color: yellow;
+  border: 2px solid #999;
+}
 .operator {
   background-color: orange;
   color: white;
@@ -161,6 +226,6 @@ export default {
   grid-column: 3 / 5;
 }
 .special {
-  background-color:tomato;
+  background-color: tomato;
 }
 </style>
