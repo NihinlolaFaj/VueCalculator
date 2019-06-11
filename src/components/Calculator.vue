@@ -31,13 +31,13 @@
 export default {
   data() {
     return {
-      // Request for the 4 Basic arithmetic calculations
+      // API Request for the 4 Basic arithmetic calculations
       PostRequest: {
         operator: "",
         firstValue: "",
         secondValue: ""
       },
-      // Request for the squareroot calculation
+      // API Request for the squareroot calculation
       SquareRootRequest: {
         squareRootOperand: ""
       },
@@ -66,17 +66,19 @@ export default {
           console.log(this.response.id);
 
           if (this.response.id == 200) {
-            console.log("I was successful");
+            console.log("API call was successful");
 
-            // Round-up to 2 decimal places
+            // Convert string to float
             this.tempResult =  parseFloat(this.response.message);
+
+            /**
+             * Check if value is an integer or a double, round up to 2 decimal places if it
+             * is a double
+             */
+            if(!Number.isInteger(this.tempResult)) {
+            console.log("I am a FLOAT!!!!");
             this.tempResult = this.tempResult.toFixed(2);
-            console.log(this.tempResult);
-
-            // // If values after decimal point is zero then truncate zeros
-            // if() {
-
-            // }
+            }
             this.current = this.tempResult;
 
             // Store previous calculation result
@@ -88,7 +90,7 @@ export default {
               this.current = "E";
             }
           } else {
-            console.log("I was NOT successful");
+            console.log("API call was NOT successful");
             alert(this.response.message);
           }
         },
