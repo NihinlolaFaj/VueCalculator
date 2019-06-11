@@ -63,7 +63,6 @@ export default {
         result => {
           this.response = result.data;
           console.log(this.response);
-          console.log(this.response.id);
 
           if (this.response.id == 200) {
             console.log("API call was successful");
@@ -79,13 +78,15 @@ export default {
             console.log("I am a FLOAT!!!!");
             this.tempResult = this.tempResult.toFixed(2);
             }
+
+            // Bind the result of the calculation to the display
             this.current = this.tempResult;
 
             // Store previous calculation result
             this.previousResult = this.current;
             this.previous = null;
 
-            // If result is greater than 9 integer digits display the letter "E"
+            // If display result is greater than 9 integer digits, then display the letter "E"
             if (this.current.length > 9) {
               this.current = "E";
             }
@@ -106,15 +107,17 @@ export default {
     },
     // Append function used to append values on the calculator display
     append(number) {
-      if (this.current.length < 9) {
+      // Limit the number of values clicked to 9 integer digits
+      // if (this.current.length < 9) {
         if (this.operatorClicked) {
           this.current = "";
           this.operatorClicked = false;
         }
         this.current = `${this.current}${number}`;
-      } else {
-        console.log("I can't add no more!");
-      }
+      // } 
+      // else {
+      //   console.log("I can't add no more!");
+      // }
     },
     // dot function used to add a dot operand to the calculator display
     dot() {
@@ -128,11 +131,13 @@ export default {
      */
     setPreviousData() {
       this.previous = this.current;
+      // this.current = null;
       this.operatorClicked = true;
     },
     // setOperator function that stores the value of the operator to be used for calculation
     setOperator(operator) {
       this.operatorValue = operator;
+      console.log(this.current);
       this.setPreviousData();
     },
     // showPreviousResult function that displays the previous calculator result
