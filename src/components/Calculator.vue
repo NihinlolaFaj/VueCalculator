@@ -31,13 +31,13 @@
 export default {
   data() {
     return {
-      // API Request for the 4 Basic arithmetic calculations
+      // API Request body for the 4 Basic arithmetic calculations
       PostRequest: {
         operator: "",
         firstValue: "",
         secondValue: ""
       },
-      // API Request for the squareroot calculation
+      // API Request body for the squareroot calculation
       SquareRootRequest: {
         squareRootOperand: ""
       },
@@ -48,7 +48,7 @@ export default {
       operatorValue: null,
       operatorClicked: false,
       results: "",
-      tempResult: 0.00
+      tempResult: 0
     };
   },
   methods: {
@@ -72,7 +72,7 @@ export default {
             this.tempResult =  parseFloat(this.response.message);
 
             /**
-             * Check if value is an integer or a double, round up to 2 decimal places if it
+             * Check if value is an integer or a double, and round up to 2 decimal places if it
              * is a double
              */
             if(!Number.isInteger(this.tempResult)) {
@@ -85,7 +85,7 @@ export default {
             this.previousResult = this.current;
             this.previous = null;
 
-            // If result is greater than 9 integer disgits display E
+            // If result is greater than 9 integer digits display the letter "E"
             if (this.current.length > 9) {
               this.current = "E";
             }
@@ -100,7 +100,7 @@ export default {
         }
       );
     },
-    // Clear Function that clears the current display of the calculator
+    // clear Function that clears the current display of the calculator
     clear() {
       this.current = "";
     },
@@ -112,7 +112,6 @@ export default {
           this.operatorClicked = false;
         }
         this.current = `${this.current}${number}`;
-        // console.log("Total is " + this.current.length);
       } else {
         console.log("I can't add no more!");
       }
@@ -160,21 +159,9 @@ export default {
 
       // Make API call
       this.callRestApi(this.PostRequest, "calculate");
-
-      // // Store previous calculation result
-      // this.previousResult = this.current;
-      // this.previous = null;
-
-      // // If result is greater than 9 interger disgits display E
-      // if (this.current.length > 9) {
-      //   this.current = "E";
-      // }
     },
     // squareroot function that calls REST API to compute the squareroot of the value displayed
     squareroot() {
-      console.log(
-        this.current
-      );
       this.SquareRootRequest.squareRootOperand = this.current;
 
       // Make API call
