@@ -18,7 +18,8 @@
       <div @click="append('2')" class="btn">2</div>
       <div @click="append('3')" class="btn">3</div>
       <div @click="setOperator('+')" class="btn operator">+</div>
-      <div @click="append('0')" class="btn zero">0</div>
+      <div @click="append('0')" class="btn">0</div>
+      <div @click="sign" class="btn">+/-</div>
       <div @click="dot" class="btn">.</div>
       <div @click="equals" class="btn operator">=</div>
       <div @click="showPreviousResult" class="btn zero special">Previous</div>
@@ -70,15 +71,15 @@ export default {
             console.log("API call was successful");
 
             // Convert string to float
-            this.tempResult =  parseFloat(this.response.message);
+            this.tempResult = parseFloat(this.response.message);
 
             /**
              * Check if value is an integer or a double, and round up to 2 decimal places if it
              * is a double
              */
-            if(!Number.isInteger(this.tempResult)) {
-            console.log("I am a FLOAT!!!!");
-            this.tempResult = this.tempResult.toFixed(2);
+            if (!Number.isInteger(this.tempResult)) {
+              console.log("I am a FLOAT!!!!");
+              this.tempResult = this.tempResult.toFixed(2);
             }
 
             // Bind the result of the calculation to the display
@@ -111,12 +112,12 @@ export default {
     append(number) {
       // Limit the number of values clicked to 9 integer digits
       // if (this.current.length < 9) {
-        if (this.operatorClicked) {
-          this.current = "";
-          this.operatorClicked = false;
-        }
-        this.current = `${this.current}${number}`;
-      // } 
+      if (this.operatorClicked) {
+        this.current = "";
+        this.operatorClicked = false;
+      }
+      this.current = `${this.current}${number}`;
+      // }
       // else {
       //   console.log("I can't add no more!");
       // }
@@ -172,6 +173,10 @@ export default {
 
       // Make API call
       this.callRestApi(this.SquareRootRequest, "squareroot");
+    },
+    // sign function to switch display value between negative and positive
+    sign() {
+      this.current = this.current.charAt(0) === "-" ? this.current.slice(1) : `-${this.current}`;
     }
   }
 };
