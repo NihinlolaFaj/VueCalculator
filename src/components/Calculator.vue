@@ -22,8 +22,8 @@
       <div @click="append('0')" class="btn">0</div>
       <div @click="dot" class="btn">.</div>
       <div @click="equals" class="btn">=</div>
-      <div @click="showPreviousResult" class="btn zero special">Previous</div>
-      <div @click="clearMemory" class="btn clearMem special">Clear Mem</div>
+      <div @click="showPreviousResult" class="btn zero special">Get Memory</div>
+      <div @click="clearMemory" class="btn clearMem special">Clear Memory</div>
     </div>
   </div>
 </template>
@@ -207,7 +207,7 @@ header {
   grid-column: 1 / 5;
   background: rgba(73,155,234,1);
   padding-top: 10%;
-  height: 65px;
+  height: 55px;
   padding-right: 15px;
   color: white;
 }
@@ -233,7 +233,7 @@ header {
   /* background: #58585b; */
   background: cadetblue;
   color: white;
-  font-size: 30px;
+  font-size: 25px;
   padding-top: 5%;
 }
 .operators {
