@@ -90,7 +90,7 @@ export default {
             this.previous = null;
 
             // If display result is greater than 9 integer digits, then display the letter "E"
-            if (this.current.length > 9) {
+            if (this.current.toString().length > 9) {
               this.current = "E";
             }
           } else {
@@ -110,17 +110,15 @@ export default {
     },
     // Append function used to append values on the calculator display
     append(number) {
-      // Limit the number of values clicked to 9 integer digits
-      // if (this.current.length < 9) {
       if (this.operatorClicked) {
         this.current = "";
         this.operatorClicked = false;
       }
-      this.current = `${this.current}${number}`;
-      // }
-      // else {
-      //   console.log("I can't add no more!");
-      // }
+      if (this.current.length < 9) {
+        this.current = `${this.current}${number}`;
+      } else {
+        console.log("I have reached my limit!!");
+      }
     },
     // dot function used to add a dot operand to the calculator display
     dot() {
@@ -134,11 +132,11 @@ export default {
      */
     setPreviousData() {
       this.previous = this.current;
-      // this.current = null;
       this.operatorClicked = true;
     },
     // setOperator function that stores the value of the operator to be used for calculation
     setOperator(operator) {
+      console.log("Operator has just been clicked!!");
       this.operatorValue = operator;
       this.setPreviousData();
     },
@@ -176,7 +174,10 @@ export default {
     },
     // sign function to switch display value between negative and positive
     sign() {
-      this.current = this.current.charAt(0) === "-" ? this.current.slice(1) : `-${this.current}`;
+      this.current =
+        this.current.charAt(0) === "-"
+          ? this.current.slice(1)
+          : `-${this.current}`;
     }
   }
 };
@@ -205,7 +206,7 @@ header {
 }
 .display {
   grid-column: 1 / 5;
-  background: rgba(73,155,234,1);
+  background: rgba(73, 155, 234, 1);
   padding-top: 10%;
   height: 55px;
   padding-right: 15px;
@@ -236,7 +237,4 @@ header {
   font-size: 25px;
   padding-top: 5%;
 }
-.operators {
-
-} 
 </style>
