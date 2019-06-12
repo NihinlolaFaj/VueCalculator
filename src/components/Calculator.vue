@@ -51,7 +51,8 @@ export default {
       operatorValue: null,
       operatorClicked: false,
       results: "",
-      tempResult: 0
+      tempResult: 0,
+      valueArray: []
     };
   },
   methods: {
@@ -65,11 +66,7 @@ export default {
       }).then(
         result => {
           this.response = result.data;
-          console.log(this.response);
-
           if (this.response.id == 200) {
-            console.log("API call was successful");
-
             // Convert string to float
             this.tempResult = parseFloat(this.response.message);
 
@@ -78,7 +75,6 @@ export default {
              * is a double
              */
             if (!Number.isInteger(this.tempResult)) {
-              console.log("I am a FLOAT!!!!");
               this.tempResult = this.tempResult.toFixed(2);
             }
 
@@ -94,13 +90,11 @@ export default {
               this.current = "E";
             }
           } else {
-            console.log("API call was NOT successful");
             alert(this.response.error);
           }
         },
         error => {
-          console.error(error);
-          alert("An error occured");
+          alert("An error occured: " + error.toString());
         }
       );
     },
@@ -114,10 +108,19 @@ export default {
         this.current = "";
         this.operatorClicked = false;
       }
-      if (this.current.length < 9) {
-        this.current = `${this.current}${number}`;
-      } else {
-        console.log("I have reached my limit!!");
+
+      // Check if display value includes dot or not to limit the value
+      if (!this.current.includes(".")) {
+        if (this.current.length < 9) {
+          this.current = `${this.current}${number}`;
+        }
+      } 
+      else {
+        // Ensure digits after the dot is limited to two
+        this.valueArray = this.current.split(".");
+        if(this.valueArray[1].length < 2) {
+          this.current = `${this.current}${number}`;
+        }
       }
     },
     // dot function used to add a dot operand to the calculator display
@@ -136,7 +139,6 @@ export default {
     },
     // setOperator function that stores the value of the operator to be used for calculation
     setOperator(operator) {
-      console.log("Operator has just been clicked!!");
       this.operatorValue = operator;
       this.setPreviousData();
     },
@@ -155,9 +157,6 @@ export default {
      * and displays the result of the calculation in the display field
      */
     equals() {
-      console.log(
-        this.previous + " " + this.operatorValue + " " + this.current
-      );
       this.PostRequest.operator = this.operatorValue;
       this.PostRequest.firstValue = this.previous;
       this.PostRequest.secondValue = this.current;
