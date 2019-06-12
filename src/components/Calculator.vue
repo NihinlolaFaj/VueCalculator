@@ -5,23 +5,23 @@
       <div @click="clear" class="btn">C</div>
       <div @click="squareRoot" class="btn">√</div>
       <div @click="append('3.14')" class="btn">π</div>
-      <div @click="setOperator('÷')" class="btn operator">÷</div>
+      <div @click="setOperator('÷')" class="btn">÷</div>
       <div @click="append('7')" class="btn">7</div>
       <div @click="append('8')" class="btn">8</div>
       <div @click="append('9')" class="btn">9</div>
-      <div @click="setOperator('x')" class="btn operator">x</div>
+      <div @click="setOperator('x')" class="btn">x</div>
       <div @click="append('4')" class="btn">4</div>
       <div @click="append('5')" class="btn">5</div>
       <div @click="append('6')" class="btn">6</div>
-      <div @click="setOperator('-')" class="btn operator">-</div>
+      <div @click="setOperator('-')" class="btn">-</div>
       <div @click="append('1')" class="btn">1</div>
       <div @click="append('2')" class="btn">2</div>
       <div @click="append('3')" class="btn">3</div>
-      <div @click="setOperator('+')" class="btn operator">+</div>
-      <div @click="append('0')" class="btn">0</div>
+      <div @click="setOperator('+')" class="btn">+</div>
       <div @click="sign" class="btn">+/-</div>
+      <div @click="append('0')" class="btn">0</div>
       <div @click="dot" class="btn">.</div>
-      <div @click="equals" class="btn operator">=</div>
+      <div @click="equals" class="btn">=</div>
       <div @click="showPreviousResult" class="btn zero special">Previous</div>
       <div @click="clearMemory" class="btn clearMem special">Clear Mem</div>
     </div>
@@ -195,21 +195,25 @@ header {
 }
 .calculator {
   width: 400px;
-  height: 400px;
+  height: 420px;
   margin: 0 auto;
   font-size: 40px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: minmax(50px, auto);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
 }
 .display {
   grid-column: 1 / 5;
-  background-color: #333;
+  background: rgba(73,155,234,1);
+  padding-top: 10%;
+  height: 65px;
+  padding-right: 15px;
   color: white;
 }
 .btn {
   background-color: #f2f2f2;
-  border: 1px solid #999;
+  /* border: 1px solid #999; */
 }
 .btn:active {
   background-color: yellow;
@@ -226,6 +230,13 @@ header {
   grid-column: 3 / 5;
 }
 .special {
-  background-color: tomato;
+  /* background: #58585b; */
+  background: cadetblue;
+  color: white;
+  font-size: 30px;
+  padding-top: 5%;
 }
+.operators {
+
+} 
 </style>
